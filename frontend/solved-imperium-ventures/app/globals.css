@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+/* ======================
+   THEME VARIABLES
+====================== */
+:root {
+  --bg-dark: #050505;
+  --bg-deep: #0a0a0a;
+
+  /* Gold Gradient Stops */
+  --gold-start: #bf953f;
+  --gold-mid: #fcf6ba;
+  --gold-end: #b38728;
+
+  --gold-glow: rgba(191, 149, 63, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+}
+
+/* ======================
+   RESET & BASE
+====================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-dark);
+  background-image: url("../public/bg_image.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #f8fafc;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ======================
+   UTILITIES
+====================== */
+
+/* Premium Background */
+.premium-bg {
+  position: relative;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(191, 149, 63, 0.08), transparent 40%),
+    linear-gradient(to bottom, #030303, #080808);
+}
+
+.premium-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/bg_image.webp");
+  background-position: center;
+  background-size: cover;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* Gold Text Gradient */
+.text-gold-gradient {
+  background: linear-gradient(135deg, var(--gold-start), var(--gold-mid) 40%, var(--gold-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 20px rgba(191, 149, 63, 0.3);
+}
+
+/* Glass Card */
+.glass-card {
+  background: rgba(15, 15, 15, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+}
+
+/* Inputs */
+input,
+textarea,
+select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--gold-start);
+  box-shadow: 0 0 0 1px var(--gold-glow);
+}
+
+select option {
+  background: #0a0a0a;
+  color: #fff;
+}
+
+/* Gold Button */
+.btn-gold {
+  background: linear-gradient(135deg, #bf953f, #cfaa5b, #b38728);
+  color: #050505;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 8px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(191, 149, 63, 0.3);
+}
+
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(191, 149, 63, 0.5);
+  filter: brightness(1.1);
+}
+
+.btn-gold:active {
+  transform: translateY(0);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 0;
+  /* Start hidden */
+}
+
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
