@@ -1,267 +1,319 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import { useState, FormEvent } from "react";
+import React from "react"
+import { useState, FormEvent } from 'react'
+import Image from 'next/image'
 
-export default function Home() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isCountryOpen, setIsCountryOpen] = useState(false);
+const COUNTRIES = [
+  'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Argentina', 'Armenia', 'Australia',
+  'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium',
+  'Belize', 'Benin', 'Bhutan', 'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Brunei',
+  'Bulgaria', 'Burkina Faso', 'Burundi', 'Cambodia', 'Cameroon', 'Canada', 'Cape Verde', 'Central African Republic',
+  'Chad', 'Chile', 'China', 'Colombia', 'Comoros', 'Congo', 'Costa Rica', 'Croatia', 'Cuba', 'Cyprus',
+  'Czech Republic', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic', 'Ecuador', 'Egypt', 'El Salvador',
+  'Equatorial Guinea', 'Eritrea', 'Estonia', 'Ethiopia', 'Fiji', 'Finland', 'France', 'Gabon', 'Gambia',
+  'Georgia', 'Germany', 'Ghana', 'Greece', 'Grenada', 'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana',
+  'Haiti', 'Honduras', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran', 'Iraq', 'Ireland', 'Israel',
+  'Italy', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kiribati', 'Kuwait', 'Kyrgyzstan',
+  'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Liechtenstein', 'Lithuania', 'Luxembourg',
+  'Madagascar', 'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Mauritania',
+  'Mauritius', 'Mexico', 'Micronesia', 'Moldova', 'Monaco', 'Mongolia', 'Montenegro', 'Morocco',
+  'Mozambique', 'Myanmar', 'Namibia', 'Nauru', 'Nepal', 'Netherlands', 'New Zealand', 'Nicaragua',
+  'Niger', 'Nigeria', 'North Korea', 'North Macedonia', 'Norway', 'Oman', 'Pakistan', 'Palau',
+  'Palestine', 'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal',
+  'Qatar', 'Romania', 'Russia', 'Rwanda', 'Saint Kitts and Nevis', 'Saint Lucia',
+  'Saint Vincent and the Grenadines', 'Samoa', 'San Marino', 'Sao Tome and Principe', 'Saudi Arabia',
+  'Senegal', 'Serbia', 'Seychelles', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Solomon Islands',
+  'Somalia', 'South Africa', 'South Korea', 'South Sudan', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname',
+  'Sweden', 'Switzerland', 'Syria', 'Taiwan', 'Tajikistan', 'Tanzania', 'Thailand', 'Timor-Leste',
+  'Togo', 'Tonga', 'Trinidad and Tobago', 'Tunisia', 'Turkey', 'Turkmenistan', 'Tuvalu', 'Uganda',
+  'Ukraine', 'United Arab Emirates', 'United Kingdom', 'United States', 'Uruguay', 'Uzbekistan', 'Vanuatu',
+  'Vatican City', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe'
+]
+
+const SERVICES = [
+  'Private Label Development',
+  'Global Import/Export',
+  'International Market Entry',
+  'Distribution Channel Building',
+  'Category Management & Sourcing'
+]
+
+export default function ContactPage() {
   const [formData, setFormData] = useState({
-    fullName: "",
-    companyName: "",
-    email: "",
-    country: "",
-    service: "",
-    message: ""
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const services = [
-    "Private Label Development",
-    "Global Import / Export",
-    "International Market Entry",
-    "Distribution Channel Building",
-    "Category Management & Sourcing",
-  ];
-
-  const countries = [
-    { name: "Australia", flag: "🇦🇺" },
-    { name: "Brazil", flag: "🇧🇷" },
-    { name: "Canada", flag: "🇨🇦" },
-    { name: "China", flag: "🇨🇳" },
-    { name: "France", flag: "🇫🇷" },
-    { name: "Germany", flag: "🇩🇪" },
-    { name: "India", flag: "🇮🇳" },
-    { name: "Italy", flag: "🇮🇹" },
-    { name: "Japan", flag: "🇯🇵" },
-    { name: "Mexico", flag: "🇲🇽" },
-    { name: "Netherlands", flag: "🇳🇱" },
-    { name: "Saudi Arabia", flag: "🇸🇦" },
-    { name: "Singapore", flag: "🇸🇬" },
-    { name: "South Africa", flag: "🇿🇦" },
-    { name: "Spain", flag: "🇪🇸" },
-    { name: "Switzerland", flag: "🇨🇭" },
-    { name: "United Arab Emirates", flag: "🇦🇪" },
-    { name: "United Kingdom", flag: "🇬🇧" },
-    { name: "United States", flag: "🇺🇸" }
-  ];
-
-  const validate = () => {
-    const newErrors: Record<string, string> = {};
-    if (!formData.fullName.trim()) newErrors.fullName = "Full Name is required";
-    if (!formData.companyName.trim()) newErrors.companyName = "Company Name is required";
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Invalid email format";
-    }
-    if (!formData.country.trim()) newErrors.country = "Country is required";
-    if (!formData.service) newErrors.service = "Please select a service";
-    if (!formData.message.trim()) newErrors.message = "Project requirements are required";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    name: '',
+    companyName: '',
+    email: '',
+    country: '',
+    service: '',
+    requirements: '',
+  })
+  const [loading, setLoading] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when user types
-    if (errors[name]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading(true)
+    setSuccessMessage('')
+    setErrorMessage('')
+
+    try {
+      const response = await fetch('/api/send-inquiry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (response.ok) {
+        setSuccessMessage('Thank you! Your inquiry has been submitted successfully. We will get back to you soon.')
+        setFormData({
+          name: '',
+          companyName: '',
+          email: '',
+          country: '',
+          service: '',
+          requirements: '',
+        })
+      } else {
+        setErrorMessage('Failed to submit inquiry. Please try again.')
+      }
+    } catch (error) {
+      setErrorMessage('An error occurred. Please try again later.')
+      console.error('Form submission error:', error)
+    } finally {
+      setLoading(false)
     }
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!validate()) return;
-
-    setIsSubmitting(true);
-    // Simulate API call
-    await new Promise(r => setTimeout(r, 1500));
-    alert("Inquiry submitted successfully!");
-    setFormData({ fullName: "", companyName: "", email: "", country: "", service: "", message: "" });
-    setIsSubmitting(false);
-  };
+  }
 
   return (
-    <main className="premium-bg min-h-screen flex items-center justify-center px-6 selection:bg-[#bf953f] selection:text-black">
-      <div className="w-full max-w-5xl py-2 relative z-10">
+    <main className="min-h-screen bg-background text-foreground relative overflow-hidden flex flex-col">
+      {/* Background with world map image */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/OIP.webp"
+          alt="World Map Background"
+          fill
+          className="object-cover opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-background/70" />
+      </div>
 
-        {/* ===== HERO ===== */}
-        <div className="text-center mb-12 animate-fade-in-up">
-          <div className="inline-block relative mb-6 group">
-            <div className="absolute -inset-4 bg-[var(--gold-start)] opacity-20 blur-xl rounded-full group-hover:opacity-30 transition-opacity duration-500"></div>
+      {/* Decorative SVG overlay */}
+      <div className="absolute inset-0 opacity-10 z-0">
+        <svg className="w-full h-full" viewBox="0 0 1000 600" preserveAspectRatio="none">
+          <defs>
+            <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+              <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
+            </pattern>
+          </defs>
+          <rect width="1000" height="600" fill="url(#grid)" />
+          <g stroke="currentColor" strokeWidth="1" opacity="0.3" fill="none">
+            <path d="M 150 100 Q 300 50, 450 100 T 750 100" />
+            <path d="M 100 200 Q 350 150, 600 200 T 950 200" />
+            <path d="M 50 300 Q 200 350, 350 300 T 650 300" />
+            <path d="M 120 400 Q 400 380, 650 420 T 900 400" />
+            <circle cx="200" cy="150" r="4" fill="currentColor" opacity="0.6" />
+            <circle cx="400" cy="100" r="3" fill="currentColor" opacity="0.5" />
+            <circle cx="700" cy="250" r="3" fill="currentColor" opacity="0.5" />
+            <circle cx="150" cy="400" r="4" fill="currentColor" opacity="0.6" />
+            <circle cx="850" cy="350" r="3" fill="currentColor" opacity="0.5" />
+          </g>
+        </svg>
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center flex-grow px-4 py-8">
+        {/* Logo and Header */}
+        <div className="mb-8 text-center">
+          <div className="flex justify-center mb-6">
             <Image
               src="/logo.png"
               alt="Solved Imperium Ventures"
-              width={160}
-              height={90}
-              className="relative mx-auto"
-              priority
+              width={120}
+              height={120}
+              className="w-40 h-40 object-contain"
             />
           </div>
-
-          <h1 className="text-3xl md:text-5xl font-bold tracking-[0.15em] text-gold-gradient mb-4 uppercase">
-            Coming Soon
+          <h1 className="text-5xl md:text-6xl font-bold text-accent mb-4 tracking-tight">
+            COMING SOON
           </h1>
-
-          <div className="flex justify-center w-full">
-            <p className="mt-4 text-lg md:text-xl text-gray-400 font-light tracking-wide max-w-2xl text-center">
-              Tailored Solutions for <span className="text-gold-gradient">Global Growth</span>
-            </p>
-          </div>
+          <p className="text-lg md:text-xl text-muted-foreground mb-8">
+            Tailored Solutions for Global Growth
+          </p>
         </div>
 
-        {/* ===== FORM CARD ===== */}
-        <div className="glass-card rounded-3xl p-8 md:p-12 animate-fade-in-up delay-200 mt-10">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-semibold mb-3 text-white">
-              Get in Touch
-            </h2>
-            <p className="text-gray-400 font-light">
-              We are launching shortly. Join our exclusive waitlist.
-            </p>
-          </div>
+        {/* Contact Form Container */}
+        <div className="w-full max-w-3xl backdrop-blur-md bg-secondary/50 border border-accent/20 rounded-lg p-8 md:p-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4 text-center uppercase tracking-wider">
+            Get In Touch
+          </h2>
+          <p className="text-center text-muted-foreground mb-8">
+            We are launching shortly. Contact us for inquiries.
+          </p>
 
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6" noValidate>
-
-            {/* Full Name */}
-            <div className="space-y-1">
-              <input
-                name="fullName"
-                placeholder="Full Name*"
-                value={formData.fullName}
-                onChange={handleChange}
-                className={`w-full ${errors.fullName ? 'border-red-500 focus:border-red-500' : ''}`}
-              />
-              {errors.fullName && <p className="text-red-400 text-xs pl-1">{errors.fullName}</p>}
+          {successMessage && (
+            <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-300 text-sm">
+              {successMessage}
             </div>
+          )}
 
-            {/* Company Name */}
-            <div className="space-y-1">
-              <input
-                name="companyName"
-                placeholder="Company Name*"
-                value={formData.companyName}
-                onChange={handleChange}
-                className={`w-full ${errors.companyName ? 'border-red-500 focus:border-red-500' : ''}`}
-              />
-              {errors.companyName && <p className="text-red-400 text-xs pl-1">{errors.companyName}</p>}
+          {errorMessage && (
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-300 text-sm">
+              {errorMessage}
             </div>
+          )}
 
-            {/* Email Address */}
-            <div className="space-y-1">
-              <input
-                name="email"
-                type="email"
-                placeholder="Email Address*"
-                value={formData.email}
-                onChange={handleChange}
-                className={`w-full ${errors.email ? 'border-red-500 focus:border-red-500' : ''}`}
-              />
-              {errors.email && <p className="text-red-400 text-xs pl-1">{errors.email}</p>}
-            </div>
-
-            {/* Country Custom Dropdown */}
-            <div className="space-y-1 relative">
-              <div className="relative">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* First Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-accent mb-2">
+                  Full Name <span className="text-red-400">*</span>
+                </label>
                 <input
-                  name="country"
-                  placeholder="Select Country*"
-                  value={formData.country}
-                  onChange={(e) => {
-                    handleChange(e);
-                    setIsCountryOpen(true);
-                  }}
-                  onFocus={() => setIsCountryOpen(true)}
-                  // Delay blur to allow clicking on options
-                  onBlur={() => setTimeout(() => setIsCountryOpen(false), 200)}
-                  className={`w-full ${errors.country ? 'border-red-500 focus:border-red-500' : ''}`}
-                  autoComplete="off"
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  placeholder="John Doe"
+                  className="w-full px-4 py-3 bg-background border border-accent/30 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent transition"
                 />
-                <div className={`absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform ${isCountryOpen ? 'rotate-180' : ''}`}>
-                  ▼
-                </div>
               </div>
-
-              {/* Dropdown Options */}
-              {isCountryOpen && (
-                <div className="absolute top-full left-0 w-full mt-2 max-h-60 overflow-y-auto bg-[#0a0a0a] border border-[var(--glass-border)] rounded-lg shadow-2xl z-50">
-                  {countries
-                    .filter(c => c.name.toLowerCase().includes(formData.country.toLowerCase()))
-                    .map(c => (
-                      <div
-                        key={c.name}
-                        onClick={() => {
-                          setFormData(prev => ({ ...prev, country: c.name }));
-                          setIsCountryOpen(false);
-                          if (errors.country) setErrors(prev => { const n = { ...prev }; delete n.country; return n; });
-                        }}
-                        className="px-4 py-3 hover:bg-[var(--glass-bg)] cursor-pointer flex items-center gap-3 transition-colors border-b border-[var(--glass-border)] last:border-0"
-                      >
-                        <span className="text-xl">{c.flag}</span>
-                        <span className="text-gray-200">{c.name}</span>
-                      </div>
-                    ))}
-                  {countries.filter(c => c.name.toLowerCase().includes(formData.country.toLowerCase())).length === 0 && (
-                    <div className="px-4 py-3 text-gray-500 text-sm">No matches found</div>
-                  )}
-                </div>
-              )}
-              {errors.country && <p className="text-red-400 text-xs pl-1">{errors.country}</p>}
+              <div>
+                <label htmlFor="companyName" className="block text-sm font-medium text-accent mb-2">
+                  Company Name <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="companyName"
+                  name="companyName"
+                  value={formData.companyName}
+                  onChange={handleChange}
+                  required
+                  placeholder="Your Company Ltd."
+                  className="w-full px-4 py-3 bg-background border border-accent/30 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent transition"
+                />
+              </div>
             </div>
 
-            {/* Service Selection */}
-            <div className="md:col-span-2 space-y-1">
+            {/* Second Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-accent mb-2">
+                  Email Address <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="john@example.com"
+                  className="w-full px-4 py-3 bg-background border border-accent/30 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent transition"
+                />
+              </div>
+              <div>
+                <label htmlFor="country" className="block text-sm font-medium text-accent mb-2">
+                  Country <span className="text-red-400">*</span>
+                </label>
+                <select
+                  id="country"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 bg-background border border-accent/30 rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent transition cursor-pointer appearance-none"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23b39859' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 1rem center',
+                    paddingRight: '2.5rem'
+                  }}
+                >
+                  <option value="">Select a country</option>
+                  {COUNTRIES.map(country => (
+                    <option key={country} value={country}>{country}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Service Dropdown */}
+            <div>
+              <label htmlFor="service" className="block text-sm font-medium text-accent mb-2">
+                Service Interested In <span className="text-red-400">*</span>
+              </label>
               <select
+                id="service"
                 name="service"
                 value={formData.service}
                 onChange={handleChange}
-                className={`w-full ${errors.service ? 'border-red-500 focus:border-red-500' : ''}`}
+                required
+                className="w-full px-4 py-3 bg-background border border-accent/30 rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent transition cursor-pointer appearance-none"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23b39859' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 1rem center',
+                  paddingRight: '2.5rem'
+                }}
               >
-                <option value="">Service Interested In</option>
-                {services.map(s => (
-                  <option key={s} value={s}>{s}</option>
+                <option value="">Select a service</option>
+                {SERVICES.map(service => (
+                  <option key={service} value={service}>{service}</option>
                 ))}
               </select>
-              {errors.service && <p className="text-red-400 text-xs pl-1">{errors.service}</p>}
             </div>
 
             {/* Project Requirements */}
-            <div className="md:col-span-2 space-y-1">
+            <div>
+              <label htmlFor="requirements" className="block text-sm font-medium text-accent mb-2">
+                Project Requirements <span className="text-red-400">*</span>
+              </label>
               <textarea
-                name="message"
-                className={`w-full ${errors.message ? 'border-red-500 focus:border-red-500' : ''}`}
-                rows={4}
-                placeholder="Project Requirements*"
-                value={formData.message}
+                id="requirements"
+                name="requirements"
+                value={formData.requirements}
                 onChange={handleChange}
+                required
+                placeholder="Tell us about your project needs..."
+                rows={5}
+                className="w-full px-4 py-3 bg-background border border-accent/30 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent transition resize-none"
               />
-              {errors.message && <p className="text-red-400 text-xs pl-1">{errors.message}</p>}
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
-              className="btn-gold md:col-span-2 mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
-              disabled={isSubmitting}
+              disabled={loading}
+              className="w-full py-3 px-6 bg-accent text-accent-foreground font-semibold rounded-lg hover:bg-accent/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? "Processing..." : "Submit Inquiry"}
+              {loading ? 'Submitting...' : 'Submit Inquiry'}
             </button>
           </form>
         </div>
-
-        {/* ===== FOOTER ===== */}
-        <div className="mt-36 pb-5">
-          <p className="text-center text-xs text-gray-600 uppercase tracking-widest animate-fade-in-up delay-300 ">
-            © {new Date().getFullYear()} Solved Imperium Ventures
-          </p>
-        </div>
       </div>
+
+      {/* Footer */}
+      <footer className="relative z-10 py-6 px-4 border-t border-accent/10">
+        <p className="text-center text-sm text-muted-foreground">
+          © 2026 Solved Imperium Ventures
+        </p>
+      </footer>
     </main>
-  );
+  )
 }
